@@ -13,13 +13,32 @@ module.exports = function (app, nus) {
 
   // shorten route
   app.get(/^\/([\w=]+)$/, function (req, res, next){
+    console.log(req.params[0])
     nus.expand(req.params[0], function (err, reply) {
       if (err) {
         next();
       } else {
+
         res.redirect(301, reply.long_url);
+
       }
     }, true);
+  });
+
+  // shorten route
+
+  app.get(/^\/([\w=]+)\+$/, function (req, res, next){
+    console.log(req.params[0])
+    shortedLink = req.params[0].replace("+","")
+    nus.expand(shortedLink, function (err, reply) {
+      if (err) {
+        next();
+      } else {
+        res.render('preview', {
+          longLink: reply.long_url
+        });
+      }
+    });
   });
 
   // catch 404 and forwarding to error handler
